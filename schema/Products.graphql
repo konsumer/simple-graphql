@@ -5,11 +5,6 @@ type Product {
   price: Float
 }
 
-type Query {
-  getProduct(id: ID!): Product
-  getAllProducts: [Product]
-}
-
 input ProductCreateInput {
   name: String!
   description: String
@@ -22,8 +17,21 @@ input ProductUpdateInput{
   price: Float
 }
 
+type Query {
+  # get a  single product
+  getProduct(id: ID!): Product
+  
+  # get all products
+  getAllProducts: [Product]
+}
+
 type Mutation {
+  # create a new product
   createProduct(token: String!, input: ProductCreateInput!): Product
+  
+  # update an existing product
   updateProduct(token: String!, id: ID!, input: ProductUpdateInput!): Product
+  
+  # delete a product
   deleteProduct(token: String!, id: ID!): Boolean
 }
