@@ -24,6 +24,7 @@ export default {
       const ok = verify(token)
       const product = await products.get(id)
       return products.put(id, Object.assign({}, product, input))
+        .then(() => Object.assign({id}, product, input))
     },
 
     deleteProduct: (obj, {token, id}, context, info) => {
