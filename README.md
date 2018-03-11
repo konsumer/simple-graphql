@@ -6,6 +6,6 @@ This is a simple [schema-stitching](https://www.apollographql.com/docs/graphql-t
 
 I implemented the data-layer with leveldb, but you can use whatever you like.
 
-I also made a simple JWT auth system, and included example endpoint that require authentications.
+I also made a simple JWT auth system, and included example endpoints that require authentications.
 
 You can think of the whole thing as a strongly-typed database, with a GraphQL interface and a leveldb storeage-back, complete with JWT authentication.

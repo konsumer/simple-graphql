@@ -2,30 +2,13 @@
  * Demo service with recursive data-types and stuff
  */
 
-import { starwars } from '../db'
 import uuid from 'uuid/v4'
-
-/**
- * Helper function to not fail on no record
- */
-const get = (table, id) => starwars[table].get(id)
-  .catch(e => {})
-
-/**
- * Helper to get all records from a table
- */
-const getAll = (table) => new Promise((resolve, reject) => {
-  const records = []
-  starwars[table].createReadStream()
-    .on('data', (data) => { records.push(data.value) })
-    .on('error', (err) => { reject(err) })
-    .on('end', () => { resolve(records) })
-})
+import { starwars, get, getAll } from '../db'
 
 /**
  * Helper function to get a character by ID.
  */
-const getCharacter = async (id) => await get('humans', id) || await get('droids', id)
+const getCharacter = async (id) => await get(starwars['humans'], id) || await get(starwars['droids'], id)
 
 /**
  * Allows us to query for a character's friends.
@@ -35,12 +18,12 @@ const getFriends = (character) => character.friends.map(id => getCharacter(id))
 /**
  * Allows us to fetch the undisputed hero of the Star Wars trilogy, R2-D2.
  */
-const getHero = (episode) => episode === 'EMPIRE' ? get('humans', '1000') : get('droids', '2001')
+const getHero = (episode) => episode === 'EMPIRE' ? get(starwars['humans'], '1000') : get(starwars['droids'], '2001')
 
 /**
  * Allows us to fetch the ephemeral reviews for each episode
  */
-const getReviews = (episode) => getAll('reviews').then(reviews => reviews.filter(r => r.episode === episode))
+const getReviews = (episode) => getAll(starwars['reviews']).then(reviews => reviews.filter(r => r.episode === episode))
 
 // I don't really know what these are for, I think it's to tell graphql where to insert the value in the graph
 const toCursor = str => Buffer('cursor' + str).toString('base64')
@@ -50,16 +33,16 @@ const resolvers = {
   Query: {
     hero: (root, { episode }) => getHero(episode),
     character: (root, { id }) => getCharacter(id),
-    human: (root, { id }) => get('humans', id),
-    droid: (root, { id }) => get('droids', id),
-    starship: (root, { id }) => get('starships', id),
+    human: (root, { id }) => get(starwars['humans'], id),
+    droid: (root, { id }) => get(starwars['droids'], id),
+    starship: (root, { id }) => get(starwars['starships'], id),
     reviews: (root, { episode }) => getReviews(episode),
     search: async (root, { text }) => {
       const re = new RegExp(text, 'i')
 
-      const humans = await getAll('humans')
-      const droids = await getAll('droids')
-      const starships = await getAll('starships')
+      const humans = await getAll(starwars['humans'])
+      const droids = await getAll(starwars['droids'])
+      const starships = await getAll(starwars['starships'])
 
       const allData = [
         ...humans,
@@ -83,8 +66,8 @@ const resolvers = {
 
   Character: {
     __resolveType: async (data, context, info) => {
-      const human = await get('humans', data.id)
-      const droid = await get('droids', data.id)
+      const human = await get(starwars['humans'], data.id)
+      const droid = await get(starwars['droids'], data.id)
 
       if (human) {
         return info.schema.getType('Human')
@@ -124,7 +107,7 @@ const resolvers = {
         totalCount: friends.length
       }
     },
-    starships: ({ starships }) => starships.map(getStarship),
+    starships: ({ starships }) => starships.map(id => get(starwars['starships'], id)),
     appearsIn: ({ appearsIn }) => appearsIn
   },
 
@@ -178,9 +161,9 @@ const resolvers = {
 
   SearchResult: {
     __resolveType: async (data, context, info) => {
-      const human = await get('humans', data.id)
-      const droid = await get('droids', data.id)
-      const starship = await get('starships', data.id)
+      const human = await get(starwars['humans'], data.id)
+      const droid = await get(starwars['droids'], data.id)
+      const starship = await get(starwars['starships'], data.id)
       if (human) {
         return info.schema.getType('Human')
       }
