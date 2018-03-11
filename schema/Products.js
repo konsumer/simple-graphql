@@ -17,7 +17,7 @@ export default {
       const ok = verify(token)
       const id = uuid()
       return products.put(id, input)
-        .then(() => Object.assign({}, {id}))
+        .then(() => Object.assign({}, input, {id}))
     },
 
     updateProduct: async (obj, {token, id, input}, context, info) => {
