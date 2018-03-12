@@ -2,7 +2,7 @@ type User {
   email: String!
 }
 
-type RegisterResponse {
+type AuthResponse {
   email: String
   token: String
 }
@@ -14,8 +14,11 @@ type Query {
 
 type Mutation {
   # register yourself as a new user
-  register(email: String!, password: String!): RegisterResponse
+  register(email: String!, password: String!): AuthResponse
   
   # login as yourself, trade credentials for a token
-  login(email: String!, password: String!): RegisterResponse
+  login(email: String!, password: String!): AuthResponse
+
+  # refresh token. trade an existing token, expired or not, but otherwise valid, for a fresh token
+  refresh(token: String!): AuthResponse
 }

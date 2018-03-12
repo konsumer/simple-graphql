@@ -1,5 +1,5 @@
 import { users } from '../db'
-import { hash, compare, sign, verify } from '../auth'
+import { hash, compare, sign, verify, refresh } from '../auth'
 
 export default {
   Query: {
@@ -42,6 +42,14 @@ export default {
         }
       } catch (e) {
         return Promise.reject('User not found.')
+      }
+    },
+
+    refresh: async (obj, { token }, context, info) => {
+      const t = await refresh(token)
+      return {
+        token: t.token,
+        email: t.data.user.email
       }
     }
   }
