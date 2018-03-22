@@ -1,0 +1,31 @@
+directive @auth(
+  role: Role = USER,
+) on FIELD_DEFINITION
+
+enum Role {
+  ADMIN
+  USER
+  UNKNOWN
+}
+
+type User @auth {
+  email: String!
+  token: String,
+  roles: [Role]
+}
+
+type Query {
+  # Find out about yourself.
+  me: User @auth
+}
+
+type Mutation {
+  # Register yourself as a new user.
+  register(email: String!, password: String!): User
+  
+  # Login as yourself, trade credentials for a token.
+  login(email: String!, password: String!): User
+
+  # Refresh token. trade an existing token, expired or not, but otherwise valid, for a fresh token.
+  refresh: User @auth
+}

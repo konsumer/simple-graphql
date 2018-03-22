@@ -1,0 +1,37 @@
+type Product {
+  id: ID
+  name: String
+  description: String
+  price: Float
+}
+
+input ProductCreateInput {
+  name: String!
+  description: String
+  price: Float!
+}
+
+input ProductUpdateInput{
+  name: String
+  description: String
+  price: Float
+}
+
+type Query {
+  # Get a  single product.
+  product(id: ID!): Product
+  
+  # Get all products.
+  productsAll: [Product]
+}
+
+type Mutation {
+  # Create a new product.
+  productAdd(token: String!, input: ProductCreateInput!): Product @auth(role: ADMIN)
+  
+  # Update an existing product.
+  productUpdate(token: String!, id: ID!, input: ProductUpdateInput!): Product @auth(role: ADMIN)
+  
+  # Delete a product.
+  productDelete(token: String!, id: ID!): Boolean @auth(role: ADMIN)
+}

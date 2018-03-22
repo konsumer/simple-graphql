@@ -85,6 +85,6 @@ typings/
 .next
 
 # ignore dotenv config
-.env
+.env.*
 
 .database
