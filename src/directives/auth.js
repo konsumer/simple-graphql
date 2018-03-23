@@ -1,6 +1,6 @@
 import { SchemaDirectiveVisitor } from 'graphql-tools'
 
-export class AuthDirective extends SchemaDirectiveVisitor {
+export class auth extends SchemaDirectiveVisitor {
   visitFieldDefinition (field) {
     const oldResolve = field.resolve
     field.description = `${field.description}Requires ${this.args.role} role.`
