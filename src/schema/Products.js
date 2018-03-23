@@ -1,5 +1,5 @@
 /**
- * Basic CRUD example, with "must auth to write"
+ * Basic CRUD example, with "must auth as ADMIN to write"
  */
 
 import { generate as shortid } from 'shortid'
