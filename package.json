@@ -35,7 +35,8 @@
     "nodemon": "^1.17.2",
     "pretty-error": "^2.1.1",
     "shortid": "^2.2.8",
-    "sublevel": "^2.4.0"
+    "sublevel": "^2.4.0",
+    "titlecase": "^1.1.2"
   },
   "babel": {
     "presets": [

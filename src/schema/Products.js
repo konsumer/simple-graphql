@@ -10,21 +10,21 @@ export const Product = Model('product')
 export default {
   Query: {
     product: (obj, { id }, context, info) => Product.get(id),
-    productsAll: async (obj, args, context, info) => Product.findAll()
+    productsAll: (obj, args, context, info) => Product.findAll().then(r => r.results)
   },
 
   Mutation: {
-    productAdd: async (obj, { input }, context, info) => {
+    productAdd: async (obj, { name, description, price }, context, info) => {
       const id = shortid()
-      return Product.put(id, input)
-        .then(() => ({ ...input, id }))
+      return Product.put(id, {id, name, description, price})
+        .then(() => ({ id, name, description, price }))
     },
 
-    productUpdate: async (obj, { id, input }, context, info) => {
+    productUpdate: async (obj, { id, name, description, price }, context, info) => {
       const product = await Product.get(id)
       return Product
-        .put(id, { ...product, ...input })
-        .then(() => ({ id, ...product, ...input }))
+        .put(id, { ...product, id, name, description, price })
+        .then(() => ({ id, name, description, price }))
     },
 
     productDelete: (obj, { id }, context, info) => Product.del(id)

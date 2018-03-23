@@ -1,11 +1,11 @@
 import { SchemaDirectiveVisitor } from 'graphql-tools'
 
-export default class AuthDirective extends SchemaDirectiveVisitor {
+export class AuthDirective extends SchemaDirectiveVisitor {
   visitFieldDefinition (field) {
     const oldResolve = field.resolve
     field.description = `${field.description}Requires ${this.args.role} role.`
     field.resolve = (obj, args, { user, ...ctx }) => {
-      if (!user) {
+      if (!user || !user.data || !user.data.roles) {
         throw new Error(`Login is required for ${field.name}.`)
       } else {
         // ADMIN supersedes all perms

@@ -14,8 +14,6 @@ import { fileLoader, mergeTypes } from 'merge-graphql-schemas'
 import { sync as glob } from 'glob'
 import { merge } from 'lodash'
 
-import AuthDirective from './directives/AuthDirective'
-
 require('pretty-error').start()
 
 // merge a glob-pattern of files (and optional ignore-pattern) into an object
@@ -30,11 +28,12 @@ const globRequire = (pattern, ignore) => {
 }
 
 const schemaDir = path.join(__dirname, 'schema')
+const directiveDir = path.join(__dirname, 'directives')
 const resolvers = globRequire(path.join(schemaDir, '*.js'), path.join(schemaDir, '*.*.js'))
-const typeDefs = mergeTypes(fileLoader(path.join(schemaDir, '**/*.graphql')), { all: true })
-const schemaDirectives = {
-  auth: AuthDirective
-}
+const directiveDefs = fileLoader(path.join(directiveDir, '**/*.graphql'))
+const typeDefs = mergeTypes(fileLoader(path.join(schemaDir, '**/*.graphql')).concat(directiveDefs), { all: true })
+const schemaDirectives = globRequire(path.join(directiveDir, '*.js'), path.join(directiveDir, '*.*.js'))
+
 const schema = makeExecutableSchema({typeDefs, resolvers, schemaDirectives})
 
 const app = express()
